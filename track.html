@@ -1,0 +1,85 @@
+<<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Track Plat Ganjil Genap</title>
+    <!-- CSS Leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        #map { height: 100vh; width: 100%; }
+        .info {
+            padding: 10px;
+            background: white;
+            box-shadow: 0 0 15px rgba(0,0,0,0.2);
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<h2>Track Plat Ganjil Genap</h2>
+<div id="map"></div>
+<div class="info" id="info"></div>
+
+<!-- Script Leaflet -->
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script>
+    // Mengecek apakah pengguna sudah login
+    const platType = localStorage.getItem('platType');
+    if (!platType) {
+        alert("Silakan login terlebih dahulu.");
+        window.location.href = 'login.html';
+    }
+
+    // Fungsi untuk memeriksa apakah hari ini ganjil atau genap
+    function checkDayType() {
+        const today = new Date();
+        const day = today.getDate();
+        return day % 2 === 0 ? 'genap' : 'ganjil';
+    }
+
+    // Inisialisasi peta di Surakarta
+    const map = L.map('map').setView([-7.5666, 110.8283], 15);
+
+    // Menambahkan tile layer dari OpenStreetMap
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        maxZoom: 19,
+        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+
+    // Lokasi dari Perempatan Masjid Sheikh Zayed hingga Simpang Tiga Gilingan
+    const jalanAYani = [
+        [-7.554442, 110.829273], // Titik awal
+        [-7.554117, 110.826906], // Lekukan pertama
+        [-7.553742, 110.825996], // Lekukan kedua
+        [-7.553539, 110.824430], // Lekukan ketiga
+        [-7.553533, 110.824292], // Lekukan keempat
+        [-7.553303, 110.823237], // Titik akhir
+    ];
+
+    // Tambahkan polyline untuk menunjukkan jalur Jalan A. Yani
+    const jalanAYaniLine = L.polyline(jalanAYani, {color: 'red', weight: 8, opacity: 0.7}).addTo(map);
+
+    // Tentukan apakah pengguna boleh melewati jalan berdasarkan tanggal dan tipe plat
+    const dayType = checkDayType();
+    const infoDiv = document.getElementById('info');
+    if (dayType === platType) {
+        // Jika tanggal dan plat sesuai
+        infoDiv.innerHTML = `
+            <h4>Pembatasan Lalu Lintas Jalan A. Yani</h4>
+            <p>Hari ini adalah <b>${dayType.toUpperCase()}</b>.</p>
+            <p>Anda diizinkan melewati Jalan A. Yani.</p>
+        `;
+    } else {
+        // Jika tanggal dan plat tidak sesuai
+        infoDiv.innerHTML = `
+            <h4>Pembatasan Lalu Lintas Jalan A. Yani</h4>
+            <p>Hari ini adalah <b>${dayType.toUpperCase()}</b>.</p>
+            <p>Kendaraan dengan plat nomor ${platType.toUpperCase()} <b>TIDAK DIIZINKAN</b> melewati jalan ini.</p>
+        `;
+    }
+</script>
+
+</body>
+</html>

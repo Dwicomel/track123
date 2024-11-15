@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Plat Kendaraan</title>
+</head>
+<body>
+
+<h2>Login untuk Mengakses Peta</h2>
+<form id="loginForm">
+    <label for="platNomor">Plat Nomor Kendaraan:</label>
+    <input type="text" id="platNomor" name="platNomor" required>
+    <button type="submit">Login</button>
+</form>
+
+<script>
+    document.getElementById('loginForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const platNomor = document.getElementById('platNomor').value.trim();
+
+        // Cek apakah plat nomor adalah ganjil atau genap
+        const isGenap = parseInt(platNomor.slice(-1)) % 2 === 0;
+        const platType = isGenap ? 'genap' : 'ganjil';
+
+        // Simpan tipe plat nomor di localStorage
+        localStorage.setItem('platType', platType);
+
+        // Redirect ke halaman peta
+        window.location.href = 'peta.html';
+    });
+</script>
+
+</body>
+</html>
